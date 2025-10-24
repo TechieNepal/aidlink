@@ -1,32 +1,34 @@
 import { NavLink } from 'react-router-dom'
+import { useI18n } from '../context/I18nContext'
 
-export default function Home() {
+export default function Home(){
+  const { t } = useI18n()
   return (
     <>
       <section className="hero">
         <div className="container">
-          <h1>Connect help requests and offers — locally.</h1>
-          <p>Post a small need or offer support. No accounts. No tracking. Just neighbors helping neighbors.</p>
+          <h1>{t('home.heroTitle')}</h1>
+          <p>{t('home.heroSubtitle')}</p>
           <p style={{display:'flex',gap:'.5rem',flexWrap:'wrap'}}>
-            <NavLink to="/post/need">Post a Need</NavLink>
-            <NavLink to="/post/offer">Offer Help</NavLink>
-            <NavLink to="/discover">Browse</NavLink>
+            <NavLink to="/post/need">{t('home.btnPostNeed')}</NavLink>
+            <NavLink to="/post/offer">{t('home.btnPostOffer')}</NavLink>
+            <NavLink to="/discover">{t('home.btnBrowse')}</NavLink>
           </p>
         </div>
       </section>
       <section className="container">
         <div className="grid">
           <div className="card">
-            <h2>Privacy-first</h2>
-            <p>No login. You control what you share. Tips on staying safe are in the Safety page.</p>
+            <h2>{t('home.privacy')}</h2>
+            <p>{t('home.privacyDesc')}</p>
           </div>
           <div className="card">
-            <h2>Micro-actions</h2>
-            <p>Requests are small and specific: rides, translations, tutoring, donated items.</p>
+            <h2>{t('home.micro')}</h2>
+            <p>{t('home.microDesc')}</p>
           </div>
           <div className="card">
-            <h2>Multilingual-ready</h2>
-            <p>International communities welcome. (i18n will land in a later PR.)</p>
+            <h2>{t('home.i18nReady')}</h2>
+            <p>{t('home.i18nReadyDesc')}</p>
           </div>
         </div>
       </section>

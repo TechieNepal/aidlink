@@ -8,19 +8,16 @@ import PrivacyTips from './PrivacyTips'
 import RedFlagList from './RedFlagList'
 import PostCard from './PostCard'
 import { buildShareUrl, copyText, downloadJson } from '../utils/share'
+import { useI18n } from '../context/I18nContext'
 
 export default function PostForm({ kind, draftKey }){
+  const { t } = useI18n()
   const [draft, setDraft] = useLocalStorage(draftKey, {
-    title: '',
-    category: '',
-    details: '',
-    locality: '',
-    contact_hint: '',
+    title: '', category: '', details: '', locality: '', contact_hint: ''
   })
   const [touched, setTouched] = useState(false)
   const { errors } = useMemo(() => validatePostFields(draft), [draft])
   const safety = useMemo(() => analyzeSafety(draft), [draft])
-
   const [savedAt, setSavedAt] = useState(null)
   useEffect(() => { setSavedAt(new Date()) }, [draft])
 
@@ -70,13 +67,13 @@ export default function PostForm({ kind, draftKey }){
   }
 
   return (
-    <form className="card" onSubmit={onValidateSave} noValidate>
-      <h2 style={{marginTop:0}}>{kind === 'need' ? 'Create a Need' : 'Create an Offer'}</h2>
-      <PrivacyTips />
+    <form className="card" onSubmit={onValidateSave} noValidate aria-labelledby="form-title">
+      <h2 id="form-title" style={{marginTop:0}}>{kind === 'need' ? t('forms.createNeed') : t('forms.createOffer')}</h2>
+      <div className="callout info" style={{marginBottom:'.75rem'}}>{t('forms.privacyTips')}</div>
 
       <Select
         id="category"
-        label="Category"
+        label={t('forms.category')}
         value={draft.category}
         onChange={onChange('category')}
         options={CATEGORIES}
@@ -85,28 +82,26 @@ export default function PostForm({ kind, draftKey }){
       />
       <TextInput
         id="title"
-        label="Title"
+        label={t('forms.title')}
         value={draft.title}
         onChange={onChange('title')}
-        placeholder={kind === 'need' ? 'Ride to clinic on Tuesday' : 'Offer: Nepali ↔ English translation'}
+        placeholder={kind === 'need' ? t('forms.needTitlePh') : t('forms.offerTitlePh')}
         error={touched ? errors.title : undefined}
         required
       />
       <TextArea
         id="details"
-        label="Details"
+        label={t('forms.details')}
         value={draft.details}
         onChange={onChange('details')}
-        placeholder={kind === 'need'
-          ? 'General time window, meeting area, any constraints. No personal contact info.'
-          : 'What you can offer, rough availability, meeting area. No personal contact info.'}
+        placeholder={kind === 'need' ? t('forms.needDetailsPh') : t('forms.offerDetailsPh')}
         rows={6}
         error={touched ? errors.details : undefined}
         required
       />
       <TextInput
         id="locality"
-        label="General area"
+        label={t('forms.locality')}
         value={draft.locality}
         onChange={onChange('locality')}
         placeholder="Irving, TX"
@@ -115,10 +110,10 @@ export default function PostForm({ kind, draftKey }){
       />
       <TextInput
         id="contact_hint"
-        label="Contact hint"
+        label={t('forms.contactHint')}
         value={draft.contact_hint}
         onChange={onChange('contact_hint')}
-        placeholder="Reply via community admin; meet at public library"
+        placeholder={t('forms.contactPh')}
         error={touched ? errors.contact_hint : undefined}
         required
       />
@@ -126,21 +121,21 @@ export default function PostForm({ kind, draftKey }){
       <RedFlagList pii={safety.pii} scam={safety.scam} score={safety.score} />
 
       <div style={{display:'flex', gap:'.5rem', flexWrap:'wrap', marginTop:'.75rem'}}>
-        <button type="submit">Validate & Save Locally</button>
-        <button type="button" onClick={()=>setTouched(true)}>Check Errors</button>
-        <button type="button" onClick={onExportJson}>Export JSON</button>
-        <button type="button" onClick={onShareLink}>Copy Share Link</button>
-        <button type="button" onClick={onReset}>Reset Fields</button>
-        <button type="button" onClick={onClearDraft} aria-label="Clear saved draft">Clear Draft</button>
+        <button type="submit">{t('forms.validateSave')}</button>
+        <button type="button" onClick={()=>setTouched(true)}>{t('forms.checkErrors')}</button>
+        <button type="button" onClick={onExportJson}>{t('forms.exportJson')}</button>
+        <button type="button" onClick={onShareLink}>{t('forms.copyShare')}</button>
+        <button type="button" onClick={onReset}>{t('forms.reset')}</button>
+        <button type="button" onClick={onClearDraft} aria-label={t('forms.clearDraft')}>{t('forms.clearDraft')}</button>
         <span className="muted" aria-live="polite" style={{alignSelf:'center'}}>
-          {savedAt ? `Autosaved ${savedAt.toLocaleTimeString()}` : ''}
+          {savedAt ? t('forms.autosaved', { time: savedAt.toLocaleTimeString() }) : ''}
         </span>
       </div>
 
       <hr style={{margin:'1rem 0'}} />
 
-      <h3>Preview</h3>
-      <p className="muted">This is how your post will look in the Discover list.</p>
+      <h3>{t('forms.preview')}</h3>
+      <p className="muted">{t('forms.previewDesc')}</p>
       <PostCard
         kind={kind === 'need' ? 'Need' : 'Offer'}
         post={{
