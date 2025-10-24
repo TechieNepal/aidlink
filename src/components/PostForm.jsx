@@ -4,6 +4,7 @@ import { CATEGORIES } from '../data/schema'
 import { validatePostFields, makeIdFromTitle } from '../utils/validators'
 import { TextInput, Select, TextArea } from './FormControls'
 import PostCard from './PostCard'
+import { buildShareUrl, copyText, downloadJson } from '../utils/share'
 
 /**
  * Generic PostForm for Need/Offer (same fields, different defaults).
@@ -17,56 +18,59 @@ export default function PostForm({ kind, draftKey }){
     locality: '',
     contact_hint: '',
   })
-
   const [touched, setTouched] = useState(false)
   const { errors, flags } = useMemo(() => validatePostFields(draft), [draft])
 
-  // Simple autosave UX hint
   const [savedAt, setSavedAt] = useState(null)
   useEffect(() => { setSavedAt(new Date()) }, [draft])
 
-  const onChange = (k) => (v) => {
-    setDraft((d) => ({ ...d, [k]: v }))
-  }
+  const onChange = (k) => (v) => setDraft((d) => ({ ...d, [k]: v }))
+  const onReset  = () => { setDraft({ title:'', category:'', details:'', locality:'', contact_hint:'' }); setTouched(false) }
+  const onClearDraft = () => { localStorage.removeItem(draftKey); onReset() }
 
-  const onReset = () => {
-    setDraft({ title:'', category:'', details:'', locality:'', contact_hint:'' })
-    setTouched(false)
-  }
-
-  const onClearDraft = () => {
-    localStorage.removeItem(draftKey)
-    onReset()
-  }
-
-  // Fake submit (no backend) — we just mark touched and keep in localStorage
-  const onSubmit = (e) => {
-    e.preventDefault()
-    setTouched(true)
-    if (Object.keys(errors).length === 0){
-      // create the object that could be exported in PR 3
-      const payload = {
-        id: makeIdFromTitle(draft.title),
-        title: draft.title.trim(),
-        category: draft.category,
-        details: draft.details.trim(),
-        locality: draft.locality.trim(),
-        contact_hint: draft.contact_hint.trim(),
-        created_at: new Date().toISOString(),
-        _kind: kind
-      }
-      // keep it in localStorage for now (next PR will export/share)
-      try { localStorage.setItem(`${draftKey}:submitted`, JSON.stringify(payload)) } catch {}
-      alert('Looks good! Your post is validated and saved locally. (Export & share arrives in PR 3.)')
-    } else {
-      // focus first error field (basic)
-      const first = document.querySelector('[aria-invalid="true"]')
-      first?.focus()
+  function buildPayload(){
+    return {
+      id: makeIdFromTitle(draft.title),
+      title: draft.title.trim(),
+      category: draft.category,
+      details: draft.details.trim(),
+      locality: draft.locality.trim(),
+      contact_hint: draft.contact_hint.trim(),
+      created_at: new Date().toISOString(),
+      _kind: kind
     }
   }
 
+  const onValidateSave = (e) => {
+    e.preventDefault()
+    setTouched(true)
+    if (Object.keys(errors).length === 0){
+      const payload = buildPayload()
+      try { localStorage.setItem(`${draftKey}:submitted`, JSON.stringify(payload)) } catch {}
+      alert('Validated and saved locally. (Export & Share available below.)')
+    } else {
+      document.querySelector('[aria-invalid="true"]')?.focus()
+    }
+  }
+
+  const onExportJson = () => {
+    setTouched(true)
+    if (Object.keys(errors).length > 0) return
+    const payload = buildPayload()
+    downloadJson(`${payload._kind}-${payload.id}.json`, payload)
+  }
+
+  const onShareLink = async () => {
+    setTouched(true)
+    if (Object.keys(errors).length > 0) return
+    const payload = buildPayload()
+    const url = buildShareUrl(location.origin, payload)
+    const ok = await copyText(url)
+    alert(ok ? 'Share link copied to clipboard!' : `Share URL:\n${url}`)
+  }
+
   return (
-    <form className="card" onSubmit={onSubmit} noValidate>
+    <form className="card" onSubmit={onValidateSave} noValidate>
       <h2 style={{marginTop:0}}>{kind === 'need' ? 'Create a Need' : 'Create an Offer'}</h2>
       <p className="muted">
         Do not include email, phone, exact address, or links. Share specifics only after trust is established.
@@ -116,7 +120,7 @@ export default function PostForm({ kind, draftKey }){
         label="Contact hint"
         value={draft.contact_hint}
         onChange={onChange('contact_hint')}
-        placeholder="Reply to this card via community admin; meet at public library"
+        placeholder="Reply via community admin; meet at public library"
         error={touched ? errors.contact_hint : undefined}
         required
       />
@@ -133,6 +137,8 @@ export default function PostForm({ kind, draftKey }){
       <div style={{display:'flex', gap:'.5rem', flexWrap:'wrap', marginTop:'.75rem'}}>
         <button type="submit">Validate & Save Locally</button>
         <button type="button" onClick={()=>setTouched(true)}>Check Errors</button>
+        <button type="button" onClick={onExportJson}>Export JSON</button>
+        <button type="button" onClick={onShareLink}>Copy Share Link</button>
         <button type="button" onClick={onReset}>Reset Fields</button>
         <button type="button" onClick={onClearDraft} aria-label="Clear saved draft">Clear Draft</button>
         <span className="muted" aria-live="polite" style={{alignSelf:'center'}}>
