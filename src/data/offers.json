@@ -1,0 +1,29 @@
+[
+  {
+    "id": "math-tutoring-1hr",
+    "title": "Offer: 1 hour math tutoring (algebra) on weekends",
+    "category": "education",
+    "details": "Happy to help middle/high school students with algebra basics.",
+    "locality": "Irving, TX",
+    "contact_hint": "Share a time window; can meet at a public library.",
+    "created_at": "2025-10-20T12:00:00.000Z"
+  },
+  {
+    "id": "translation-nepali-english",
+    "title": "Offer: Nepali ↔ English translation for forms",
+    "category": "translation",
+    "details": "Can help read/translate simple forms (non-legal).",
+    "locality": "Coppell, TX",
+    "contact_hint": "Send the form type; we can schedule a call via admin.",
+    "created_at": "2025-10-21T18:00:00.000Z"
+  },
+  {
+    "id": "tech-setup-old-phone",
+    "title": "Offer: Setup help for older Android phones",
+    "category": "tech",
+    "details": "Can reset, install basic apps, enable accessibility settings.",
+    "locality": "Dallas, TX",
+    "contact_hint": "Describe the device model; meet in a public place.",
+    "created_at": "2025-10-22T11:10:00.000Z"
+  }
+]
