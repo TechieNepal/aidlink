@@ -2,14 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 import { CATEGORIES } from '../data/schema'
 import { validatePostFields, makeIdFromTitle } from '../utils/validators'
+import { analyzeSafety } from '../utils/moderation'
 import { TextInput, Select, TextArea } from './FormControls'
+import PrivacyTips from './PrivacyTips'
+import RedFlagList from './RedFlagList'
 import PostCard from './PostCard'
 import { buildShareUrl, copyText, downloadJson } from '../utils/share'
 
-/**
- * Generic PostForm for Need/Offer (same fields, different defaults).
- * @param {{kind: 'need' | 'offer', draftKey: string}} props
- */
 export default function PostForm({ kind, draftKey }){
   const [draft, setDraft] = useLocalStorage(draftKey, {
     title: '',
@@ -19,7 +18,8 @@ export default function PostForm({ kind, draftKey }){
     contact_hint: '',
   })
   const [touched, setTouched] = useState(false)
-  const { errors, flags } = useMemo(() => validatePostFields(draft), [draft])
+  const { errors } = useMemo(() => validatePostFields(draft), [draft])
+  const safety = useMemo(() => analyzeSafety(draft), [draft])
 
   const [savedAt, setSavedAt] = useState(null)
   useEffect(() => { setSavedAt(new Date()) }, [draft])
@@ -72,9 +72,7 @@ export default function PostForm({ kind, draftKey }){
   return (
     <form className="card" onSubmit={onValidateSave} noValidate>
       <h2 style={{marginTop:0}}>{kind === 'need' ? 'Create a Need' : 'Create an Offer'}</h2>
-      <p className="muted">
-        Do not include email, phone, exact address, or links. Share specifics only after trust is established.
-      </p>
+      <PrivacyTips />
 
       <Select
         id="category"
@@ -125,14 +123,7 @@ export default function PostForm({ kind, draftKey }){
         required
       />
 
-      {flags.length > 0 && (
-        <div className="card" style={{background:'#fff9e6', borderColor:'#ffe08a', marginTop:'.75rem'}}>
-          <strong>Privacy hints:</strong>
-          <ul style={{marginTop:'.5rem'}}>
-            {flags.map((f,i)=><li key={i}>{f}</li>)}
-          </ul>
-        </div>
-      )}
+      <RedFlagList pii={safety.pii} scam={safety.scam} score={safety.score} />
 
       <div style={{display:'flex', gap:'.5rem', flexWrap:'wrap', marginTop:'.75rem'}}>
         <button type="submit">Validate & Save Locally</button>
