@@ -1,0 +1,87 @@
+{
+  "nav": {
+    "home": "Home",
+    "discover": "Discover",
+    "postNeed": "Post Need",
+    "postOffer": "Offer Help",
+    "safety": "Safety",
+    "about": "About"
+  },
+  "home": {
+    "heroTitle": "Connect help requests and offers — locally.",
+    "heroSubtitle": "Post a small need or offer support. No accounts. No tracking. Just neighbors helping neighbors.",
+    "btnPostNeed": "Post a Need",
+    "btnPostOffer": "Offer Help",
+    "btnBrowse": "Browse",
+    "privacy": "Privacy-first",
+    "privacyDesc": "No login. You control what you share. Tips on staying safe are in the Safety page.",
+    "micro": "Micro-actions",
+    "microDesc": "Requests are small and specific: rides, translations, tutoring, donated items.",
+    "i18nReady": "Multilingual-ready",
+    "i18nReadyDesc": "International communities welcome. (More strings to be translated later.)"
+  },
+  "discover": {
+    "title": "Discover",
+    "subtitle": "Browse local {{needs}} and {{offers}}. Imported posts are read-only and stored locally.",
+    "needs": "needs",
+    "offers": "offers",
+    "tabNeeds": "Needs ({{n}})",
+    "tabOffers": "Offers ({{n}})",
+    "emptyNeeds": "Be the first to post a need.",
+    "emptyOffers": "Be the first to offer help.",
+    "noFound": "No {{kind}} found"
+  },
+  "forms": {
+    "createNeed": "Create a Need",
+    "createOffer": "Create an Offer",
+    "category": "Category",
+    "title": "Title",
+    "details": "Details",
+    "locality": "General area",
+    "contactHint": "Contact hint",
+    "needTitlePh": "Ride to clinic on Tuesday",
+    "offerTitlePh": "Offer: Nepali ↔ English translation",
+    "needDetailsPh": "General time window, meeting area, constraints. No personal contact info.",
+    "offerDetailsPh": "What you can offer, availability, meeting area. No personal contact info.",
+    "contactPh": "Reply via community admin; meet at public library",
+    "validateSave": "Validate & Save Locally",
+    "checkErrors": "Check Errors",
+    "exportJson": "Export JSON",
+    "copyShare": "Copy Share Link",
+    "reset": "Reset Fields",
+    "clearDraft": "Clear Draft",
+    "autosaved": "Autosaved {{time}}",
+    "privacyTips": "Share safely. Avoid email, phone, exact address, or links in public posts.",
+    "preview": "Preview",
+    "previewDesc": "This is how your post will look in the Discover list."
+  },
+  "safety": {
+    "title": "Safety & Privacy",
+    "principle": "Key principle: Share minimal public info. Move specifics to a trusted channel after initial contact.",
+    "do": "Do",
+    "dont": "Don’t",
+    "doList": [
+      "Use a general area only (e.g., “Irving, TX”).",
+      "Meet in public places (library lobby, community center).",
+      "Bring a friend if uncertain; share your plan with someone.",
+      "Keep contact hints indirect (e.g., “coordinate via admin”).",
+      "Trust your instincts—decline if something feels off."
+    ],
+    "dontList": [
+      "Post email, phone numbers, or exact addresses publicly.",
+      "Send “verification codes” or pay “upfront fees”.",
+      "Accept requests for gift cards, crypto, or wire transfers.",
+      "Click unknown links; avoid sharing personal documents."
+    ],
+    "mod": "Reporting & Moderation",
+    "modDesc": "AidLink is a client-side tool without user tracking. If your community uses an admin or moderator, share questionable posts with them."
+  },
+  "about": {
+    "title": "About AidLink",
+    "body1": "A small tool for real connection: neighbors asking for what they need and offering what they can.",
+    "body2": "Built by the community, for the community."
+  },
+  "a11y": {
+    "skip": "Skip to content"
+  }
+}
